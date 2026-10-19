@@ -1,3 +1,4 @@
+
 // services/airQualityService.ts
 
 import { DataKualitasUdara } from "../types/weather";
@@ -11,21 +12,21 @@ export async function ambilKualitasUdara(
 ): Promise<DataKualitasUdara> {
   const url =
     `${BASE_URL}?latitude=${latitude}&longitude=${longitude}` +
-    `&current=european_aqi,pm2_5,pm10`;
+    "&current=european_aqi,pm2_5,pm10";
 
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(
-      `Gagal memuat kualitas udara (status ${response.status})`
-    );
+    throw new Error("Gagal memuat kualitas udara");
   }
 
   const data = await response.json();
 
-  return {
+  const hasil: DataKualitasUdara = {
     indeksAQI: data.current.european_aqi,
     pm25: data.current.pm2_5,
     pm10: data.current.pm10,
   };
+
+  return hasil;
 }

@@ -1,5 +1,11 @@
 import { useState, useCallback } from "react";
-import { View, Text, Button, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  Alert,
+  Platform,
+} from "react-native";
 import { useFocusEffect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -21,7 +27,25 @@ export default function TabRiwayat() {
     }, [])
   );
 
-  function hapus(id: number, nama: string) {
+  async function prosesHapus(id: number) {
+  await hapusFavorit(id);
+
+  setDaftarFavorit((prev) =>
+    prev.filter((k) => k.id !== id)
+  );
+}
+
+function hapus(id: number, nama: string) {
+  if (Platform.OS === "web") {
+    const yakin = window.confirm(`Yakin hapus ${nama}?`);
+
+    if (yakin) {
+      void prosesHapus(id);
+    }
+
+    return;
+  }
+
   Alert.alert(
     "Konfirmasi Hapus",
     `Yakin hapus ${nama}?`,
@@ -33,12 +57,8 @@ export default function TabRiwayat() {
       {
         text: "Hapus",
         style: "destructive",
-        onPress: async () => {
-          await hapusFavorit(id);
-
-          setDaftarFavorit((prev) =>
-            prev.filter((k) => k.id !== id)
-          );
+        onPress: () => {
+          void prosesHapus(id);
         },
       },
     ]

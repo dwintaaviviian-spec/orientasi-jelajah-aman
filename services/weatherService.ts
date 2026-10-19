@@ -1,3 +1,4 @@
+
 // services/weatherService.ts
 
 import { DataCuacaLengkap } from "../types/weather";
@@ -9,18 +10,19 @@ export async function ambilCuaca(
   latitude: number,
   longitude: number
 ): Promise<DataCuacaLengkap> {
-  const url =
-    `${BASE_URL}?latitude=${latitude}&longitude=${longitude}` +
-    `&current=temperature_2m,weather_code,wind_speed_10m` +
-    `&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`;
-
   const controller = new AbortController();
+
   const timer = setTimeout(
     () => controller.abort(),
     BATAS_WAKTU_MS
   );
 
   try {
+    const url =
+      `${BASE_URL}?latitude=${latitude}&longitude=${longitude}` +
+      `&current=temperature_2m,weather_code,wind_speed_10m` +
+      `&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`;
+
     const response = await fetch(url, {
       signal: controller.signal,
     });
@@ -33,7 +35,7 @@ export async function ambilCuaca(
 
     const data = await response.json();
 
-    return {
+    const hasil: DataCuacaLengkap = {
       saatIni: {
         suhu: data.current.temperature_2m,
         kodeCuaca: data.current.weather_code,
@@ -47,11 +49,11 @@ export async function ambilCuaca(
         kodeCuaca: data.daily.weather_code,
       },
     };
+
+    return hasil;
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
-      throw new Error(
-        "Permintaan cuaca melebihi batas waktu, coba lagi"
-      );
+      throw new Error("Permintaan cuaca melebihi batas waktu.");
     }
 
     throw err;
