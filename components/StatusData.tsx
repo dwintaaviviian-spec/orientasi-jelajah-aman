@@ -1,6 +1,7 @@
 // components/StatusData.tsx
 
 import { View, Text } from "react-native";
+import { useTema } from "../context/ThemeContext";
 import { SumberData } from "../types/cache";
 
 interface StatusDataProps {
@@ -37,6 +38,7 @@ export default function StatusData({
   sumber,
   disimpanPada,
 }: StatusDataProps) {
+  const { temaGelap } = useTema();
   const basi = sumber === "cache-basi";
   const label = labelSumber(sumber);
   const umur = formatUmur(disimpanPada);
@@ -46,23 +48,40 @@ export default function StatusData({
       accessible
       accessibilityLabel={label + ", diperbarui " + umur}
       style={{
-        padding: 8,
-        borderRadius: 8,
-        backgroundColor: basi ? "#FEF3E2" : "#EAFBF6",
-      }}
+  padding: 8,
+  borderRadius: 8,
+  backgroundColor: basi
+    ? temaGelap
+      ? "#3A2B1A"
+      : "#FEF3E2"
+    : temaGelap
+      ? "#17352D"
+      : "#EAFBF6",
+}}
     >
       <Text
-        style={{
-          fontSize: 12,
-          color: basi ? "#B45309" : "#13795F",
-        }}
-      >
+  style={{
+    fontSize: 12,
+    color: basi
+      ? temaGelap
+        ? "#FBBF24"
+        : "#B45309"
+      : temaGelap
+        ? "#6EE7B7"
+        : "#13795F",
+  }}
+>
         {label}
       </Text>
 
-      <Text style={{ fontSize: 11, color: "#666666" }}>
-        Diperbarui {umur}
-      </Text>
+     <Text
+  style={{
+    fontSize: 11,
+    color: temaGelap ? "#BBBBBB" : "#666666",
+  }}
+>
+  Diperbarui {umur}
+</Text>
     </View>
   );
 }

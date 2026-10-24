@@ -111,3 +111,15 @@ export async function hapusSemuaCache(): Promise<void> {
 
   await db.runAsync("DELETE FROM cache_cuaca");
 }
+
+export async function hapusCacheKota(
+  latitude: number,
+  longitude: number
+): Promise<void> {
+  const db = await ambilDatabase();
+
+  await db.runAsync(
+    "DELETE FROM cache_cuaca WHERE kunci = ?",
+    [buatKunci(latitude, longitude)]
+  );
+}
